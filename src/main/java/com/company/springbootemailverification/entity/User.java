@@ -13,6 +13,7 @@ import org.hibernate.annotations.NaturalId;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "users")
 public class User {
 
     @Id
