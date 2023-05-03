@@ -1,4 +1,4 @@
-package com.company.springbootemailverification.request;
+package com.company.springbootemailverification.registration;
 
 public record RegisterRequest(
         String firstname,
