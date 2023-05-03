@@ -3,8 +3,10 @@ package com.company.springbootemailverification.service;
 import com.company.springbootemailverification.entity.User;
 import com.company.springbootemailverification.enums.Role;
 import com.company.springbootemailverification.exception.UserAlreadyExistsException;
+import com.company.springbootemailverification.registration.token.VerificationToken;
+import com.company.springbootemailverification.registration.token.VerificationTokenRepository;
 import com.company.springbootemailverification.repository.UserRepository;
-import com.company.springbootemailverification.request.RegisterRequest;
+import com.company.springbootemailverification.registration.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -40,7 +43,11 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("User not found !"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found !"));
     }
 
+    public void saveUserVerificationToken(User theUser, String token) {
+        var verificationToken = new VerificationToken(token, theUser);
+        verificationTokenRepository.save(verificationToken);
+    }
 }
