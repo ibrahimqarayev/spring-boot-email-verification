@@ -1,4 +1,4 @@
-package com.company.springbootemailverification.config;
+package com.company.springbootemailverification.security;
 
 import com.company.springbootemailverification.entity.User;
 import lombok.Data;
