@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,5 +50,24 @@ public class UserService {
     public void saveUserVerificationToken(User theUser, String token) {
         var verificationToken = new VerificationToken(token, theUser);
         verificationTokenRepository.save(verificationToken);
+    }
+
+    public String validateToken(String theToken) {
+        VerificationToken token = verificationTokenRepository.findByToken(theToken);
+        if (token == null) {
+            return "Invalid verification token";
+        }
+
+        User user = token.getUser();
+        Calendar calendar = Calendar.getInstance();
+
+        if ((token.getExpirationTime().getTime() - calendar.getTimeInMillis()) <= 0) {
+            verificationTokenRepository.delete(token);
+            return "Token already expired";
+        }
+
+        user.setEnabled(true);
+        userRepository.save(user);
+        return "valid";
     }
 }
